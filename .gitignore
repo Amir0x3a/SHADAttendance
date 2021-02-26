@@ -1,3 +1,4 @@
 MobileNumber.txt
-.vs
-.gitignore
+.vs/
+env/
+
