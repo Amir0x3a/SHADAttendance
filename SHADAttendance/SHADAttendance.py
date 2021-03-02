@@ -13,13 +13,13 @@ class main:
             ctypes.windll.user32.MessageBoxW(0, "Choose your chat", "Wait For User ...", 0)
         self.driver.find_element_by_class_name("im_dialog_wrap.active").click()
         # Scroll Conversation pannel
-        scrl_element = self.driver.find_element_by_class_name("im_history_col")
+        # scrl_element = self.driver.find_element_by_class_name("im_history_col")
         while True:
             split_list = self.driver.find_elements_by_class_name("im_message_date_split_text")
             split_text = [x.text for x in split_list] 
             if not split_text.count(split_text[0]) == len(split_text) and len(split_text)>1:
                 break
-            self.driver.execute_script('arguments[0].scrollTo(0, -arguments[0].scrollHeight)', scrl_element)
+            self.driver.execute_script("arguments[0].scrollIntoView()", split_list[-1]);
 
             
         
