@@ -3,7 +3,6 @@ from selenium.webdriver import Chrome
 from selenium.webdriver.common.keys import Keys
 import ctypes
 import os
-import pickle
 import bs4
 
 
@@ -46,7 +45,7 @@ class main:
 
 
     def login(self, driver):
-        self.load_cookie(driver)
+        self.load_auth(driver)
         # Agar Phone number nadarim SAVE new Cookie
         if len(driver.find_elements_by_name("phone_number"))<1:
             return
@@ -57,20 +56,21 @@ class main:
             driver.find_element_by_class_name("btn.btn-md.btn-md-primary").click() 
             rCode = input("Enter The Code : ")
             driver.find_element_by_name("phone_code").send_keys(rCode)
-            self.save_cookie(driver)    
+            self.save_auth(driver)    
             return
 
-    def save_cookie(self, driver):
-        with open('cookie.dat', 'wb') as filehandler:
-            pickle.dump(driver.get_cookies(), filehandler)
+    def save_auth(self, driver):
+        auth = driver.execute_script("return window.localStorage.getItem('auth');")
+        with open('auth.dat', 'w') as filehandler:
+            filehandler.write(auth)
 
-    def load_cookie(self, driver):  
-        cookiePath = 'cookie.dat'
-        if os.path.getsize(cookiePath) > 0 and os.path.exists(cookiePath):
-            with open(cookiePath, 'rb') as cookiesfile:
-                cookies = pickle.load(cookiesfile)
-                for cookie in cookies:
-                    driver.add_cookie(cookie)
+    def load_auth(self, driver):  
+        authPath = 'auth.dat'
+        if os.path.exists(authPath) and os.path.getsize(authPath) > 0 :
+            with open(authPath, 'r') as authPath:
+                token = authPath.readline()
+                driver.execute_script("window.localStorage.setItem('auth', arguments[0]);", token)
+                driver.refresh()
     
     def input_phonenumber(self):
         numfile = open('MobileNumber.txt', 'r')
